@@ -8,174 +8,366 @@
 <meta name="apple-mobile-web-app-title" content="Petit Clo">
 <title>Petit Clo 来客記録</title>
 <style>
-  :root {
-    --bg: #faf9f7;
-    --surface: #ffffff;
-    --surface2: #f4f2ef;
-    --border: #e8e4df;
-    --border2: #d4cfc8;
-    --text: #1a1714;
-    --text2: #6b6560;
-    --text3: #9e9891;
-    --accent: #c4956a;
-    --accent-bg: #fdf4eb;
-    --accent-border: #e8c99a;
-    --success: #5a8a6a;
-    --success-bg: #eef5f0;
-    --success-border: #a8d0b4;
-    --radius: 12px;
-    --radius-sm: 8px;
-    --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
-  }
-  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-  body { font-family: 'Hiragino Sans', 'Hiragino Kaku Gothic ProN', 'YuGothic', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; max-width: 560px; margin: 0 auto; padding-bottom: 2rem; }
-  .header { background: var(--surface); border-bottom: 1px solid var(--border); padding: 14px 20px; position: sticky; top: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between; }
-  .header-brand { font-size: 13px; font-weight: 600; letter-spacing: 0.12em; color: var(--accent); text-transform: uppercase; }
-  .header-meta { font-size: 12px; color: var(--text3); }
-  .screen { display: none; padding: 20px; }
-  .screen.active { display: block; }
-  .section-title { font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text3); margin-bottom: 10px; }
-  .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; margin-bottom: 12px; box-shadow: var(--shadow); }
-  label.field-label { display: block; font-size: 12px; color: var(--text2); margin-bottom: 5px; }
-  input[type="text"], input[type="date"], input[type="number"] { width: 100%; padding: 10px 12px; background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius-sm); font-size: 15px; color: var(--text); outline: none; font-family: inherit; -webkit-appearance: none; }
-  input:focus { border-color: var(--accent-border); background: var(--accent-bg); }
-  .btn { display: block; width: 100%; padding: 13px 16px; border-radius: var(--radius-sm); border: 1px solid var(--border2); background: var(--surface); color: var(--text); font-size: 14px; font-family: inherit; font-weight: 500; cursor: pointer; text-align: center; transition: background 0.15s, transform 0.1s; -webkit-appearance: none; }
-  .btn:active { transform: scale(0.98); background: var(--surface2); }
-  .btn-primary { background: var(--accent); color: white; border-color: var(--accent); }
-  .btn-primary:active { background: #b8845a; }
-  .btn-success { background: var(--success-bg); color: var(--success); border-color: var(--success-border); font-size: 16px; font-weight: 600; padding: 18px; }
-  .btn-exit { background: var(--surface2); color: var(--text2); font-size: 16px; padding: 18px; }
-  .btn-small { display: inline-block; width: auto; padding: 7px 14px; font-size: 13px; }
-  .btn-ghost { background: transparent; border-color: transparent; color: var(--text2); font-size: 13px; }
-  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-  .grid-2-auto { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px; }
-  .stat-card { background: var(--surface2); border-radius: var(--radius-sm); padding: 14px; text-align: center; }
-  .stat-label { font-size: 11px; color: var(--text3); margin-bottom: 4px; letter-spacing: 0.05em; }
-  .stat-value { font-size: 26px; font-weight: 600; color: var(--text); line-height: 1; }
-  .stat-value.highlight { color: var(--accent); }
-  .divider { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
-  .exit-buttons { display: flex; flex-direction: column; gap: 6px; }
-  .exit-btn { text-align: left; padding: 12px 14px; font-size: 14px; background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius-sm); color: var(--text); cursor: pointer; font-family: inherit; transition: background 0.12s; -webkit-appearance: none; width: 100%; }
-  .exit-btn:active { background: var(--accent-bg); border-color: var(--accent-border); }
-  .tags-wrap { display: flex; flex-wrap: wrap; gap: 7px; }
-  .tag-btn { padding: 7px 12px; border-radius: 20px; border: 1px solid var(--border2); background: var(--surface); color: var(--text2); font-size: 13px; font-family: inherit; cursor: pointer; transition: all 0.12s; -webkit-appearance: none; }
-  .tag-btn.active { background: var(--accent-bg); border-color: var(--accent-border); color: var(--accent); font-weight: 500; }
-  .memo-input { width: 100%; padding: 10px 12px; background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius-sm); font-size: 14px; color: var(--text); outline: none; font-family: inherit; -webkit-appearance: none; }
-  .memo-input:focus { border-color: var(--accent-border); background: var(--accent-bg); }
-  .summary-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--border); font-size: 14px; }
-  .summary-row:last-child { border-bottom: none; }
-  .summary-row-label { color: var(--text); }
-  .summary-row-value { color: var(--text2); font-size: 13px; }
-  .log-item { padding: 8px 12px; background: var(--surface2); border-radius: var(--radius-sm); margin-bottom: 6px; font-size: 13px; color: var(--text2); display: flex; gap: 8px; align-items: flex-start; }
-  .log-time { color: var(--text3); flex-shrink: 0; font-size: 12px; margin-top: 1px; }
-  .log-result-buy { color: var(--success); font-weight: 600; }
-  .copy-btn { background: var(--accent); color: white; border: none; border-radius: var(--radius-sm); padding: 14px; font-size: 15px; font-family: inherit; font-weight: 600; width: 100%; cursor: pointer; -webkit-appearance: none; display: flex; align-items: center; justify-content: center; gap: 8px; }
-  .copy-btn.copied { background: var(--success); }
-  .toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--text); color: white; padding: 10px 20px; border-radius: 20px; font-size: 13px; opacity: 0; transition: all 0.25s; z-index: 999; white-space: nowrap; pointer-events: none; }
-  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-  .back-btn { display: flex; align-items: center; gap: 6px; color: var(--text2); font-size: 13px; background: none; border: none; cursor: pointer; font-family: inherit; padding: 0; margin-bottom: 16px; }
-  .undo-area { display: flex; justify-content: flex-end; margin-bottom: 4px; }
+:root{
+  --bg:#faf9f7;--surface:#fff;--surface2:#f4f2ef;--border:#e8e4df;--border2:#d4cfc8;
+  --text:#1a1714;--text2:#6b6560;--text3:#9e9891;
+  --accent:#c4956a;--accent-bg:#fdf4eb;--accent-border:#e8c99a;
+  --success:#5a8a6a;--success-bg:#eef5f0;--success-border:#a8d0b4;
+  --danger:#a05050;--danger-bg:#fdf0f0;--danger-border:#f0b8b8;
+  --radius:12px;--radius-sm:8px;
+  --shadow:0 1px 3px rgba(0,0,0,.06),0 1px 2px rgba(0,0,0,.04);
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font-family:'Hiragino Sans','Hiragino Kaku Gothic ProN','YuGothic',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;max-width:560px;margin:0 auto;padding-bottom:3rem}
+.header{background:var(--surface);border-bottom:1px solid var(--border);padding:14px 20px;position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-content:space-between}
+.header-brand{font-size:13px;font-weight:600;letter-spacing:.12em;color:var(--accent);text-transform:uppercase}
+.header-meta{font-size:12px;color:var(--text3)}
+.screen{display:none;padding:20px}.screen.active{display:block}
+.sec{font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);margin-bottom:10px}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:12px;box-shadow:var(--shadow)}
+.fl{display:block;font-size:12px;color:var(--text2);margin-bottom:5px}
+input[type=text],input[type=date],input[type=number]{width:100%;padding:10px 12px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);font-size:15px;color:var(--text);outline:none;font-family:inherit;-webkit-appearance:none}
+input:focus{border-color:var(--accent-border);background:var(--accent-bg)}
+.btn{display:block;width:100%;padding:13px 16px;border-radius:var(--radius-sm);border:1px solid var(--border2);background:var(--surface);color:var(--text);font-size:14px;font-family:inherit;font-weight:500;cursor:pointer;text-align:center;transition:background .15s,transform .1s;-webkit-appearance:none}
+.btn:active{transform:scale(.98);background:var(--surface2)}
+.btn-primary{background:var(--accent);color:#fff;border-color:var(--accent)}.btn-primary:active{background:#b8845a}
+.btn-success{background:var(--success-bg);color:var(--success);border-color:var(--success-border);font-size:16px;font-weight:600;padding:18px}
+.btn-exit{background:var(--surface2);color:var(--text2);font-size:16px;padding:18px}
+.btn-sm{display:inline-block;width:auto;padding:7px 14px;font-size:13px}
+.btn-ghost{background:transparent;border-color:transparent;color:var(--text2);font-size:13px}
+.btn-ao{border-color:var(--accent-border);color:var(--accent);background:var(--accent-bg);font-size:13px;padding:8px 14px}
+.btn-danger{background:var(--danger-bg);color:var(--danger);border-color:var(--danger-border);font-size:12px;padding:5px 10px;border-radius:var(--radius-sm);border:1px solid var(--danger-border);font-family:inherit;cursor:pointer;-webkit-appearance:none;white-space:nowrap}
+.btn-danger:active{background:#fce0e0}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.g2a{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
+.sc{background:var(--surface2);border-radius:var(--radius-sm);padding:14px;text-align:center}
+.sl{font-size:11px;color:var(--text3);margin-bottom:4px;letter-spacing:.05em}
+.sv{font-size:26px;font-weight:600;color:var(--text);line-height:1}
+.sv.hl{color:var(--accent)}
+.divider{border:none;border-top:1px solid var(--border);margin:16px 0}
+.egl{font-size:11px;color:var(--text3);font-weight:600;letter-spacing:.08em;padding:8px 0 4px}
+.eb{text-align:left;padding:11px 14px;font-size:14px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);cursor:pointer;font-family:inherit;-webkit-appearance:none;width:100%;transition:background .12s}
+.eb:active{background:var(--accent-bg);border-color:var(--accent-border)}
+.eb.ind{padding-left:22px;font-size:13px;color:var(--text2)}
+.ebs{display:flex;flex-direction:column;gap:5px}
+.tw{display:flex;flex-wrap:wrap;gap:7px}
+.tg{padding:7px 12px;border-radius:20px;border:1px solid var(--border2);background:var(--surface);color:var(--text2);font-size:13px;font-family:inherit;cursor:pointer;transition:all .12s;-webkit-appearance:none}
+.tg.on{background:var(--accent-bg);border-color:var(--accent-border);color:var(--accent);font-weight:500}
+.tgl{width:100%;font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);padding:8px 0 3px}
+.mi{width:100%;padding:10px 12px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);font-size:14px;color:var(--text);outline:none;font-family:inherit;-webkit-appearance:none}
+.mi:focus{border-color:var(--accent-border);background:var(--accent-bg)}
+.sr{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border);font-size:14px}
+.sr:last-child{border-bottom:none}
+.cb{background:var(--accent);color:#fff;border:none;border-radius:var(--radius-sm);padding:14px;font-size:15px;font-family:inherit;font-weight:600;width:100%;cursor:pointer;-webkit-appearance:none;display:flex;align-items:center;justify-content:center;gap:8px}
+.cb.done{background:var(--success)}
+.toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--text);color:#fff;padding:10px 20px;border-radius:20px;font-size:13px;opacity:0;transition:all .25s;z-index:999;white-space:nowrap;pointer-events:none}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.bb{display:flex;align-items:center;gap:6px;color:var(--text2);font-size:13px;background:none;border:none;cursor:pointer;font-family:inherit;padding:0;margin-bottom:16px}
+.pr{display:flex;gap:8px;align-items:center;margin-bottom:8px}
+.pr input[type=number]{flex:1;min-width:0}
+.pd{flex-shrink:0;width:34px;height:38px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text3);font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;-webkit-appearance:none;font-family:inherit}
+.pd:active{background:var(--danger-bg);color:var(--danger)}
+.ptotal{font-size:14px;font-weight:600;color:var(--accent);text-align:right;margin-top:4px}
+.log-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:12px 14px;margin-bottom:8px;box-shadow:var(--shadow)}
+.log-card-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.log-card-result-buy{color:var(--success);font-weight:600;font-size:14px}
+.log-card-result-exit{color:var(--text2);font-size:14px}
+.log-card-time{color:var(--text3);font-size:12px}
+.log-card-price{font-size:14px;font-weight:600;color:var(--accent);margin-bottom:4px}
+.log-card-tags{font-size:12px;color:var(--text3);margin-bottom:4px}
+.log-card-memo{font-size:13px;color:var(--text2)}
+.log-card-footer{display:flex;justify-content:flex-end;margin-top:8px;padding-top:8px;border-top:1px solid var(--border)}
 </style>
 </head>
 <body>
 <div class="header">
   <span class="header-brand">Petit Clo</span>
-  <span class="header-meta" id="header-meta">来客記録</span>
+  <span class="header-meta" id="hm">来客記録</span>
 </div>
 <div class="toast" id="toast"></div>
 <div class="screen active" id="screen-setup">
-  <div style="margin-bottom:20px;margin-top:8px;">
-    <div style="font-size:20px;font-weight:600;margin-bottom:4px;">イベント情報</div>
-    <div style="font-size:13px;color:var(--text3);">記録を始める前に入力してください</div>
+  <div style="margin-bottom:20px;margin-top:8px">
+    <div style="font-size:20px;font-weight:600;margin-bottom:4px">イベント情報</div>
+    <div style="font-size:13px;color:var(--text3)">記録を始める前に入力してください</div>
   </div>
   <div class="card">
-    <label class="field-label">イベント名</label>
+    <label class="fl">イベント名</label>
     <input type="text" id="setup-name" placeholder="例：〇〇マルシェ">
-    <div style="height:12px;"></div>
-    <label class="field-label">開催日</label>
+    <div style="height:12px"></div>
+    <label class="fl">開催日</label>
     <input type="date" id="setup-date">
   </div>
   <button class="btn btn-primary" onclick="startTracking()">記録を開始する →</button>
 </div>
 <div class="screen" id="screen-main">
-  <div class="grid-2-auto">
-    <div class="stat-card"><div class="stat-label">来客</div><div class="stat-value" id="stat-total">0<span style="font-size:14px;font-weight:400;color:var(--text3);">組</span></div></div>
-    <div class="stat-card"><div class="stat-label">購入</div><div class="stat-value" id="stat-buy">0<span style="font-size:14px;font-weight:400;color:var(--text3);">組</span></div></div>
+  <div class="g2a">
+    <div class="sc"><div class="sl">来客</div><div class="sv" id="s-total">0<span style="font-size:14px;font-weight:400;color:var(--text3)">組</span></div></div>
+    <div class="sc"><div class="sl">購入</div><div class="sv" id="s-buy">0<span style="font-size:14px;font-weight:400;color:var(--text3)">組</span></div></div>
   </div>
-  <div class="card" style="padding:12px 16px;display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
-    <div><div style="font-size:11px;color:var(--text3);">購入率</div><div style="font-size:22px;font-weight:600;color:var(--accent);" id="stat-rate">— %</div></div>
-    <button class="btn btn-small btn-ghost" onclick="undoLast()">← 最後を取消</button>
+  <div class="g2a">
+    <div class="sc"><div class="sl">購入率</div><div class="sv hl" id="s-rate">—</div></div>
+    <div class="sc"><div class="sl">売上合計</div><div class="sv hl" style="font-size:20px" id="s-sales">¥0</div></div>
   </div>
-  <div class="section-title">① この組の結果</div>
-  <div class="grid-2" style="margin-bottom:8px;">
-    <button class="btn btn-success" onclick="logVisitor('buy')">購入 ✓</button>
+  <div class="sec">① この組の結果</div>
+  <div class="g2" style="margin-bottom:8px">
+    <button class="btn btn-success" onclick="toggleBuyPanel()">購入 ✓</button>
     <button class="btn btn-exit" onclick="toggleExitPanel()">離脱 →</button>
   </div>
-  <div id="exit-panel" style="display:none;margin-bottom:12px;">
-    <div class="card" style="padding:12px;">
-      <div class="section-title" style="margin-bottom:8px;">離脱理由</div>
-      <div class="exit-buttons">
-        <button class="exit-btn" onclick="logVisitor('exit-price-low')">値段を見て去った（2,000円台）</button>
-        <button class="exit-btn" onclick="logVisitor('exit-price-mid')">値段を見て去った（3,000円台）</button>
-        <button class="exit-btn" onclick="logVisitor('exit-price-high')">値段を見て去った（4,000円台）</button>
-        <button class="exit-btn" onclick="logVisitor('exit-held')">手に取ったが戻した</button>
-        <button class="exit-btn" onclick="logVisitor('exit-tried')">子供に当ててみたが去った</button>
-        <button class="exit-btn" onclick="logVisitor('exit-long')">長時間滞在して未購入</button>
-        <button class="exit-btn" onclick="logVisitor('exit-competitor')">競合と比較して離脱</button>
-        <button class="exit-btn" onclick="logVisitor('exit-other')">その他</button>
+  <div id="buy-panel" style="display:none;margin-bottom:12px">
+    <div class="card" style="padding:14px">
+      <div class="sec" style="margin-bottom:6px">購入金額を入力</div>
+      <div style="font-size:12px;color:var(--text3);margin-bottom:10px">複数購入は「＋追加」で行を増やせます</div>
+      <div id="price-list"></div>
+      <button class="btn btn-ao btn-sm" onclick="addPriceRow()" style="margin-bottom:10px;display:inline-block">＋ 追加</button>
+      <div class="ptotal" id="price-total">合計：¥0</div>
+      <div style="height:10px"></div>
+      <button class="btn btn-primary" onclick="confirmBuy()">この金額で購入記録する ✓</button>
+    </div>
+  </div>
+  <div id="exit-panel" style="display:none;margin-bottom:12px">
+    <div class="card" style="padding:12px">
+      <div class="sec" style="margin-bottom:8px">離脱パターン（近いものをタップ）</div>
+      <div class="ebs">
+        <div class="egl">値札を見なかった</div>
+        <button class="eb" onclick="logVisitor('exit-no-tag')">値札を見ずにそのまま去った</button>
+        <div class="egl">値札を見た</div>
+        <button class="eb ind" onclick="logVisitor('exit-tag-low')">└ 値札を見て去った（2,000円台）</button>
+        <button class="eb ind" onclick="logVisitor('exit-tag-mid')">└ 値札を見て去った（3,000円台）</button>
+        <button class="eb ind" onclick="logVisitor('exit-tag-high')">└ 値札を見て去った（4,000円台）</button>
+        <div class="egl">手に取った・試した</div>
+        <button class="eb" onclick="logVisitor('exit-held-tag')">手に取ったが値札を見て戻した</button>
+        <button class="eb" onclick="logVisitor('exit-tried')">子供に当ててみたが去った</button>
+        <div class="egl">その他</div>
+        <button class="eb" onclick="logVisitor('exit-long')">長時間滞在して未購入</button>
+        <button class="eb" onclick="logVisitor('exit-competitor')">競合と比較して離脱</button>
+        <button class="eb" onclick="logVisitor('exit-other')">その他</button>
       </div>
     </div>
   </div>
   <hr class="divider">
-  <div class="section-title">② 特徴タグ（任意・複数可）</div>
-  <div class="tags-wrap" id="tag-area" style="margin-bottom:14px;"></div>
+  <div class="sec">② 特徴タグ（任意・複数可）</div>
+  <div class="tw" id="tag-area" style="margin-bottom:14px"></div>
   <hr class="divider">
-  <div class="section-title">③ メモ（任意）</div>
-  <input class="memo-input" type="text" id="visitor-memo" placeholder="例：SNSで見たと言っていた" style="margin-bottom:16px;">
+  <div class="sec">③ メモ（任意）</div>
+  <input class="mi" type="text" id="visitor-memo" placeholder="例：SNSで見たと言っていた" style="margin-bottom:16px">
   <hr class="divider">
-  <div class="grid-2">
+  <div class="g2">
     <button class="btn" onclick="showSummary()">集計を見る</button>
     <button class="btn" onclick="showLog()">記録一覧</button>
   </div>
 </div>
 <div class="screen" id="screen-summary">
-  <button class="back-btn" onclick="backToMain()">← 記録に戻る</button>
-  <div style="font-size:18px;font-weight:600;margin-bottom:16px;">集計</div>
-  <div class="grid-2-auto">
-    <div class="stat-card"><div class="stat-label">総来客</div><div class="stat-value" id="sum-total">0<span style="font-size:13px;color:var(--text3);">組</span></div></div>
-    <div class="stat-card"><div class="stat-label">購入率</div><div class="stat-value highlight" id="sum-rate">—</div></div>
+  <button class="bb" onclick="backToMain()">← 記録に戻る</button>
+  <div style="font-size:18px;font-weight:600;margin-bottom:16px">集計</div>
+  <div class="g2a">
+    <div class="sc"><div class="sl">総来客</div><div class="sv" id="sum-total">0<span style="font-size:13px;color:var(--text3)">組</span></div></div>
+    <div class="sc"><div class="sl">購入率</div><div class="sv hl" id="sum-rate">—</div></div>
   </div>
-  <div class="card"><div class="section-title">離脱パターン</div><div id="sum-exit-list"></div></div>
-  <div class="card"><div class="section-title">来客特徴タグ</div><div id="sum-tag-list"></div></div>
-  <div class="card"><div class="section-title">メモ一覧</div><div id="sum-memo-list"></div></div>
+  <div class="sc" style="margin-bottom:12px">
+    <div class="sl">売上合計</div>
+    <div class="sv hl" id="sum-sales">¥0</div>
+  </div>
+  <div class="card"><div class="sec">購入金額一覧</div><div id="sum-sales-list"></div></div>
+  <div class="card"><div class="sec">離脱パターン</div><div id="sum-exit-list"></div></div>
+  <div class="card"><div class="sec">来客特徴タグ</div><div id="sum-tag-list"></div></div>
+  <div class="card"><div class="sec">メモ一覧</div><div id="sum-memo-list"></div></div>
   <hr class="divider">
-  <button class="copy-btn" id="copy-btn" onclick="copyMD()">
-    <span id="copy-icon">📋</span><span id="copy-label">mdをコピーする</span>
+  <button class="cb" id="copy-btn" onclick="copyMD()">
+    <span>📋</span><span id="copy-label">mdをコピーする</span>
   </button>
-  <div style="font-size:12px;color:var(--text3);text-align:center;margin-top:8px;">コピー後、Claudeに貼り付けて分析依頼できます</div>
+  <div style="font-size:12px;color:var(--text3);text-align:center;margin-top:8px">コピー後、Claudeに貼り付けて分析依頼できます</div>
 </div>
 <div class="screen" id="screen-log">
-  <button class="back-btn" onclick="backToMain()">← 記録に戻る</button>
-  <div style="font-size:18px;font-weight:600;margin-bottom:16px;">記録一覧</div>
+  <button class="bb" onclick="backToMain()">← 記録に戻る</button>
+  <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:16px">
+    <div style="font-size:18px;font-weight:600">記録一覧</div>
+    <div style="font-size:12px;color:var(--text3)">各カードの「取消」で個別削除できます</div>
+  </div>
   <div id="log-list"></div>
 </div>
 <script>
-const TAGS=[{id:'age0',label:'0〜3歳連れ'},{id:'age4',label:'4〜6歳連れ'},{id:'age-ele',label:'小学生連れ'},{id:'no-child',label:'子供なし'},{id:'sns',label:'SNS経由の気配'},{id:'repeat',label:'リピーター感'},{id:'world',label:'世界観に反応'},{id:'photo',label:'写真を撮った'},{id:'price-focus',label:'価格重視の印象'},{id:'passing',label:'通りすがり感'}];
-const EXIT_LABELS={'exit-price-low':'値段で離脱（2,000円台）','exit-price-mid':'値段で離脱（3,000円台）','exit-price-high':'値段で離脱（4,000円台）','exit-held':'手に取ったが戻した','exit-tried':'子供に当ててみたが去った','exit-long':'長時間滞在して未購入','exit-competitor':'競合比較して離脱','exit-other':'その他離脱'};
+const TAG_GROUPS = [
+  { label:'来客属性', tags:[
+    {id:'age0', label:'0〜3歳連れ'},
+    {id:'age4', label:'4〜6歳連れ'},
+    {id:'age-ele', label:'小学生連れ'},
+    {id:'no-child', label:'子供なし'},
+  ]},
+  { label:'SNS・ブランド', tags:[
+    {id:'sns', label:'SNS経由の気配'},
+    {id:'sns-said', label:'「Instagram見てた」発言'},
+    {id:'follower', label:'フォロワーと発言'},
+  ]},
+  { label:'購買行動', tags:[
+    {id:'coord-ask', label:'コーデを聞いてきた'},
+    {id:'coord-buy', label:'コーデ買い'},
+    {id:'repeat', label:'再来店'},
+    {id:'next', label:'次回また来ると言っていた'},
+    {id:'gift', label:'プレゼント目的'},
+  ]},
+  { label:'ファン度', tags:[
+    {id:'wearing', label:'着用して来てくれた'},
+    {id:'photo-past', label:'購入済み商品の写真を持参'},
+  ]},
+  { label:'反応・印象', tags:[
+    {id:'world', label:'世界観に反応'},
+    {id:'price-focus', label:'価格重視の印象'},
+    {id:'passing', label:'通りすがり感'},
+  ]},
+];
+const ALL_TAGS = TAG_GROUPS.flatMap(g=>g.tags);
+const TAG_MAP = Object.fromEntries(ALL_TAGS.map(t=>[t.id,t.label]));
+const EXIT_LABELS = {
+  'exit-no-tag':'値札を見ずに去った',
+  'exit-tag-low':'値札を見て去った（2,000円台）',
+  'exit-tag-mid':'値札を見て去った（3,000円台）',
+  'exit-tag-high':'値札を見て去った（4,000円台）',
+  'exit-held-tag':'手に取ったが値札を見て戻した',
+  'exit-tried':'子供に当ててみたが去った',
+  'exit-long':'長時間滞在して未購入',
+  'exit-competitor':'競合と比較して離脱',
+  'exit-other':'その他',
+};
 let eventName='',eventDate='',records=[],activeTags=new Set();
-function startTracking(){eventName=document.getElementById('setup-name').value.trim()||'（未設定）';eventDate=document.getElementById('setup-date').value||'（未設定）';document.getElementById('header-meta').textContent=eventName;showScreen('screen-main');renderTags();updateStats();}
-function showScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');window.scrollTo(0,0);}
-function renderTags(){const area=document.getElementById('tag-area');area.innerHTML='';TAGS.forEach(tag=>{const btn=document.createElement('button');btn.className='tag-btn'+(activeTags.has(tag.id)?' active':'');btn.textContent=tag.label;btn.onclick=()=>{activeTags.has(tag.id)?activeTags.delete(tag.id):activeTags.add(tag.id);renderTags();};area.appendChild(btn);});}
-function toggleExitPanel(){const p=document.getElementById('exit-panel');p.style.display=p.style.display==='none'?'block':'none';}
-function logVisitor(result){const memo=document.getElementById('visitor-memo').value.trim();const time=new Date().toTimeString().slice(0,5);records.push({time,result,tags:[...activeTags],memo});activeTags.clear();document.getElementById('visitor-memo').value='';document.getElementById('exit-panel').style.display='none';renderTags();updateStats();showToast(result==='buy'?'購入 ✓ 記録しました':'離脱を記録しました');}
-function undoLast(){if(!records.length)return;records.pop();updateStats();showToast('最後の記録を取り消しました');}
-function updateStats(){const total=records.length,buys=records.filter(r=>r.result==='buy').length;document.getElementById('stat-total').innerHTML=total+'<span style="font-size:14px;font-weight:400;color:var(--text3);">組</span>';document.getElementById('stat-buy').innerHTML=buys+'<span style="font-size:14px;font-weight:400;color:var(--text3);">組</span>';document.getElementById('stat-rate').textContent=total>0?Math.round(buys/total*100)+' %':'— %';}
-function showSummary(){showScreen('screen-summary');const total=records.length,buys=records.filter(r=>r.result==='buy').length;document.getElementById('sum-total').innerHTML=total+'<span style="font-size:13px;color:var(--text3);">組</span>';document.getElementById('sum-rate').textContent=total>0?Math.round(buys/total*100)+' %':'—';const exits=records.filter(r=>r.result!=='buy'),exitCount={};exits.forEach(r=>{exitCount[r.result]=(exitCount[r.result]||0)+1;});const exitList=document.getElementById('sum-exit-list'),exitEntries=Object.entries(exitCount).sort((a,b)=>b[1]-a[1]);exitList.innerHTML=exitEntries.length===0?'<div style="font-size:13px;color:var(--text3);">（なし）</div>':exitEntries.map(([k,v])=>`<div class="summary-row"><span class="summary-row-label">${EXIT_LABELS[k]||k}</span><span class="summary-row-value">${v}件 (${Math.round(v/exits.length*100)}%)</span></div>`).join('');const tagCount={},tagMap={};TAGS.forEach(t=>tagMap[t.id]=t.label);records.forEach(r=>r.tags.forEach(t=>{tagCount[t]=(tagCount[t]||0)+1;}));const tagList=document.getElementById('sum-tag-list'),tagEntries=Object.entries(tagCount).sort((a,b)=>b[1]-a[1]);tagList.innerHTML=tagEntries.length===0?'<div style="font-size:13px;color:var(--text3);">（なし）</div>':tagEntries.map(([k,v])=>`<div class="summary-row"><span class="summary-row-label">${tagMap[k]||k}</span><span class="summary-row-value">${v}件</span></div>`).join('');const memoRecords=records.filter(r=>r.memo),memoList=document.getElementById('sum-memo-list');memoList.innerHTML=memoRecords.length===0?'<div style="font-size:13px;color:var(--text3);">（なし）</div>':memoRecords.map(r=>`<div class="log-item"><span class="log-time">${r.time}</span><span>${r.memo}</span></div>`).join('');}
-function showLog(){showScreen('screen-log');const list=document.getElementById('log-list'),tagMap={};TAGS.forEach(t=>tagMap[t.id]=t.label);if(!records.length){list.innerHTML='<div style="font-size:13px;color:var(--text3);text-align:center;padding:2rem 0;">まだ記録がありません</div>';return;}list.innerHTML=[...records].reverse().map(r=>{const isBuy=r.result==='buy',tagStr=r.tags.map(t=>tagMap[t]||t).join('・');return`<div class="log-item" style="flex-direction:column;gap:4px;"><div style="display:flex;gap:8px;align-items:center;"><span class="log-time">${r.time}</span><span class="${isBuy?'log-result-buy':''}">${isBuy?'購入':(EXIT_LABELS[r.result]||r.result)}</span></div>${tagStr?`<div style="font-size:12px;color:var(--text3);">${tagStr}</div>`:''} ${r.memo?`<div style="font-size:13px;color:var(--text2);">${r.memo}</div>`:''}</div>`;}).join('');}
+function startTracking(){
+  eventName=document.getElementById('setup-name').value.trim()||'（未設定）';
+  eventDate=document.getElementById('setup-date').value||'（未設定）';
+  document.getElementById('hm').textContent=eventName;
+  showScreen('screen-main');renderTags();addPriceRow();updateStats();
+}
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');window.scrollTo(0,0);
+}
+function renderTags(){
+  const area=document.getElementById('tag-area');area.innerHTML='';
+  TAG_GROUPS.forEach(group=>{
+    const lbl=document.createElement('div');lbl.className='tgl';lbl.textContent=group.label;area.appendChild(lbl);
+    group.tags.forEach(tag=>{
+      const btn=document.createElement('button');
+      btn.className='tg'+(activeTags.has(tag.id)?' on':'');
+      btn.textContent=tag.label;
+      btn.onclick=()=>{activeTags.has(tag.id)?activeTags.delete(tag.id):activeTags.add(tag.id);renderTags();};
+      area.appendChild(btn);
+    });
+  });
+}
+function toggleBuyPanel(){
+  const bp=document.getElementById('buy-panel'),ep=document.getElementById('exit-panel');
+  ep.style.display='none';bp.style.display=bp.style.display==='none'?'block':'none';
+}
+function toggleExitPanel(){
+  const ep=document.getElementById('exit-panel'),bp=document.getElementById('buy-panel');
+  bp.style.display='none';ep.style.display=ep.style.display==='none'?'block':'none';
+}
+function addPriceRow(){
+  const list=document.getElementById('price-list');
+  const row=document.createElement('div');row.className='pr';
+  const inp=document.createElement('input');inp.type='number';inp.placeholder='例：2500';inp.min='0';inp.oninput=updatePriceTotal;
+  const del=document.createElement('button');del.className='pd';del.textContent='×';
+  del.onclick=()=>{row.remove();updatePriceTotal();};
+  row.appendChild(inp);row.appendChild(del);list.appendChild(row);
+}
+function updatePriceTotal(){
+  const inputs=document.querySelectorAll('#price-list input[type=number]');
+  let total=0;inputs.forEach(i=>{total+=parseInt(i.value)||0;});
+  document.getElementById('price-total').textContent='合計：¥'+total.toLocaleString();
+}
+function getPrices(){
+  const inputs=document.querySelectorAll('#price-list input[type=number]');
+  const prices=[];inputs.forEach(i=>{const v=parseInt(i.value);if(v>0)prices.push(v);});return prices;
+}
+function confirmBuy(){const prices=getPrices();logVisitor('buy',prices);resetPriceList();document.getElementById('buy-panel').style.display='none';}
+function resetPriceList(){document.getElementById('price-list').innerHTML='';addPriceRow();updatePriceTotal();}
+function logVisitor(result,prices=[]){
+  const memo=document.getElementById('visitor-memo').value.trim();
+  const time=new Date().toTimeString().slice(0,5);
+  const total=prices.reduce((a,b)=>a+b,0);
+  const id=Date.now();
+  records.push({id,time,result,prices,total,tags:[...activeTags],memo});
+  activeTags.clear();document.getElementById('visitor-memo').value='';
+  document.getElementById('exit-panel').style.display='none';
+  renderTags();updateStats();
+  showToast(result==='buy'?'購入 ✓ 記録しました（¥'+total.toLocaleString()+'）':'離脱を記録しました');
+}
+function deleteRecord(id){
+  if(!confirm('この記録を取り消しますか？'))return;
+  records=records.filter(r=>r.id!==id);updateStats();showLog();showToast('記録を取り消しました');
+}
+function updateStats(){
+  const total=records.length,buys=records.filter(r=>r.result==='buy');
+  const salesTotal=buys.reduce((a,r)=>a+r.total,0);
+  document.getElementById('s-total').innerHTML=total+'<span style="font-size:14px;font-weight:400;color:var(--text3)">組</span>';
+  document.getElementById('s-buy').innerHTML=buys.length+'<span style="font-size:14px;font-weight:400;color:var(--text3)">組</span>';
+  document.getElementById('s-rate').textContent=total>0?Math.round(buys.length/total*100)+'%':'—';
+  document.getElementById('s-sales').textContent='¥'+salesTotal.toLocaleString();
+}
+function showSummary(){
+  showScreen('screen-summary');
+  const total=records.length,buys=records.filter(r=>r.result==='buy');
+  const salesTotal=buys.reduce((a,r)=>a+r.total,0);
+  document.getElementById('sum-total').innerHTML=total+'<span style="font-size:13px;color:var(--text3)">組</span>';
+  document.getElementById('sum-rate').textContent=total>0?Math.round(buys.length/total*100)+'%':'—';
+  document.getElementById('sum-sales').textContent='¥'+salesTotal.toLocaleString();
+  const salesList=document.getElementById('sum-sales-list');
+  salesList.innerHTML=buys.length===0?'<div style="font-size:13px;color:var(--text3)">（なし）</div>'
+    :buys.map(r=>{const ps=r.prices.length>1?r.prices.map(p=>'¥'+p.toLocaleString()).join(' + ')+' = ¥'+r.total.toLocaleString():'¥'+r.total.toLocaleString();
+      return `<div class="sr"><span style="color:var(--text3);font-size:13px">${r.time}</span><span style="font-weight:500">${ps}</span></div>`;}).join('');
+  const exits=records.filter(r=>r.result!=='buy'),exitCount={};
+  exits.forEach(r=>{exitCount[r.result]=(exitCount[r.result]||0)+1;});
+  const exitEntries=Object.entries(exitCount).sort((a,b)=>b[1]-a[1]);
+  document.getElementById('sum-exit-list').innerHTML=exitEntries.length===0?'<div style="font-size:13px;color:var(--text3)">（なし）</div>'
+    :exitEntries.map(([k,v])=>`<div class="sr"><span>${EXIT_LABELS[k]||k}</span><span style="color:var(--text2);font-size:13px">${v}件 (${Math.round(v/exits.length*100)}%)</span></div>`).join('');
+  const tagCount={};records.forEach(r=>r.tags.forEach(t=>{tagCount[t]=(tagCount[t]||0)+1;}));
+  const tagEntries=Object.entries(tagCount).sort((a,b)=>b[1]-a[1]);
+  document.getElementById('sum-tag-list').innerHTML=tagEntries.length===0?'<div style="font-size:13px;color:var(--text3)">（なし）</div>'
+    :tagEntries.map(([k,v])=>`<div class="sr"><span>${TAG_MAP[k]||k}</span><span style="color:var(--text2);font-size:13px">${v}件</span></div>`).join('');
+  const memos=records.filter(r=>r.memo);
+  document.getElementById('sum-memo-list').innerHTML=memos.length===0?'<div style="font-size:13px;color:var(--text3)">（なし）</div>'
+    :memos.map(r=>`<div style="padding:8px 0;border-bottom:1px solid var(--border);font-size:13px"><span style="color:var(--text3);font-size:12px;margin-right:8px">${r.time}</span>${r.memo}</div>`).join('');
+}
+function showLog(){
+  showScreen('screen-log');
+  const list=document.getElementById('log-list');
+  if(!records.length){list.innerHTML='<div style="font-size:13px;color:var(--text3);text-align:center;padding:2rem 0">まだ記録がありません</div>';return;}
+  list.innerHTML=[...records].reverse().map(r=>{
+    const isBuy=r.result==='buy';
+    const tagStr=r.tags.map(t=>TAG_MAP[t]||t).join('・');
+    const priceStr=isBuy&&r.total>0?(r.prices.length>1?r.prices.map(p=>'¥'+p.toLocaleString()).join(' + ')+' = ¥'+r.total.toLocaleString():'¥'+r.total.toLocaleString()):'';
+    return `<div class="log-card">
+      <div class="log-card-header">
+        <span class="${isBuy?'log-card-result-buy':'log-card-result-exit'}">${isBuy?'購入 ✓':(EXIT_LABELS[r.result]||r.result)}</span>
+        <span class="log-card-time">${r.time}</span>
+      </div>
+      ${priceStr?`<div class="log-card-price">${priceStr}</div>`:''}
+      ${tagStr?`<div class="log-card-tags">${tagStr}</div>`:''}
+      ${r.memo?`<div class="log-card-memo">${r.memo}</div>`:''}
+      <div class="log-card-footer">
+        <button class="btn-danger" onclick="deleteRecord(${r.id})">この記録を取り消す</button>
+      </div>
+    </div>`;
+  }).join('');
+}
 function backToMain(){showScreen('screen-main');}
-function generateMD(){const total=records.length,buys=records.filter(r=>r.result==='buy').length,exits=records.filter(r=>r.result!=='buy'),exitCount={};exits.forEach(r=>{exitCount[r.result]=(exitCount[r.result]||0)+1;});const tagCount={},tagMap={};TAGS.forEach(t=>tagMap[t.id]=t.label);records.forEach(r=>r.tags.forEach(t=>{tagCount[t]=(tagCount[t]||0)+1;}));const exitLines=Object.entries(exitCount).sort((a,b)=>b[1]-a[1]).map(([k,v])=>`- ${EXIT_LABELS[k]||k}：${v}件`).join('\n')||'- （なし）';const tagLines=Object.entries(tagCount).sort((a,b)=>b[1]-a[1]).map(([k,v])=>`- ${tagMap[k]||k}：${v}件`).join('\n')||'- （なし）';const memoLines=records.filter(r=>r.memo).map(r=>`- ${r.time} [${r.result==='buy'?'購入':EXIT_LABELS[r.result]||r.result}] ${r.memo}`).join('\n')||'- （なし）';return`## ${eventDate}\n\n### イベント名\n${eventName}\n\n---\n\n# 来客数\n\n### 総来客数（組）\n${total}\n\n### 購入者数（組）\n${buys}\n\n### 購入率\n${total>0?Math.round(buys/total*100)+'%':'—'}\n\n---\n\n# 離脱パターン（リアルタイム記録）\n\n${exitLines}\n\n---\n\n# 来客特徴タグ（延べ件数）\n\n${tagLines}\n\n---\n\n# メモ一覧（時刻付き）\n\n${memoLines}\n\n---\n\n# Claude分析\n\n<!-- Claudeに貼り付けて分析依頼してください -->\n\n---\n\n# 次回改善候補\n\n<!-- Claudeに貼り付けて分析依頼してください -->\n`;}
-function copyMD(){const md=generateMD(),btn=document.getElementById('copy-btn'),label=document.getElementById('copy-label');if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(md).then(()=>{label.textContent='コピーしました！';btn.classList.add('copied');setTimeout(()=>{label.textContent='mdをコピーする';btn.classList.remove('copied');},2500);});}else{const ta=document.createElement('textarea');ta.value=md;ta.style.cssText='position:fixed;top:-9999px;';document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);label.textContent='コピーしました！';btn.classList.add('copied');setTimeout(()=>{label.textContent='mdをコピーする';btn.classList.remove('copied');},2500);}}
-function showToast(msg){const toast=document.getElementById('toast');toast.textContent=msg;toast.classList.add('show');setTimeout(()=>toast.classList.remove('show'),1800);}
+function generateMD(){
+  const total=records.length,buys=records.filter(r=>r.result==='buy');
+  const salesTotal=buys.reduce((a,r)=>a+r.total,0);
+  const exits=records.filter(r=>r.result!=='buy'),exitCount={};
+  exits.forEach(r=>{exitCount[r.result]=(exitCount[r.result]||0)+1;});
+  const tagCount={};records.forEach(r=>r.tags.forEach(t=>{tagCount[t]=(tagCount[t]||0)+1;}));
+  const exitLines=Object.entries(exitCount).sort((a,b)=>b[1]-a[1]).map(([k,v])=>`- ${EXIT_LABELS[k]||k}：${v}件`).join('\n')||'- （なし）';
+  const tagLines=Object.entries(tagCount).sort((a,b)=>b[1]-a[1]).map(([k,v])=>`- ${TAG_MAP[k]||k}：${v}件`).join('\n')||'- （なし）';
+  const salesLines=buys.length===0?'- （なし）':buys.map(r=>{const ps=r.prices.length>1?r.prices.map(p=>'¥'+p.toLocaleString()).join(' + ')+' = ¥'+r.total.toLocaleString():'¥'+r.total.toLocaleString();return `- ${r.time}　${ps}`;}).join('\n');
+  const memoLines=records.filter(r=>r.memo).map(r=>`- ${r.time} [${r.result==='buy'?'購入':EXIT_LABELS[r.result]||r.result}] ${r.memo}`).join('\n')||'- （なし）';
+  return `## ${eventDate}\n\n### イベント名\n${eventName}\n\n---\n\n# 来客数\n\n### 総来客数（組）\n${total}\n\n### 購入者数（組）\n${buys.length}\n\n### 購入率\n${total>0?Math.round(buys.length/total*100)+'%':'—'}\n\n### 売上合計\n¥${salesTotal.toLocaleString()}\n\n---\n\n# 購入金額一覧\n\n${salesLines}\n\n---\n\n# 離脱パターン（リアルタイム記録）\n\n${exitLines}\n\n---\n\n# 来客特徴タグ（延べ件数）\n\n${tagLines}\n\n---\n\n# メモ一覧（時刻付き）\n\n${memoLines}\n\n---\n\n# Claude分析\n\n<!-- Claudeに貼り付けて分析依頼してください -->\n\n---\n\n# 次回改善候補\n\n<!-- Claudeに貼り付けて分析依頼してください -->\n`;
+}
+function copyMD(){
+  const md=generateMD(),btn=document.getElementById('copy-btn'),label=document.getElementById('copy-label');
+  const finish=()=>{label.textContent='コピーしました！';btn.classList.add('done');setTimeout(()=>{label.textContent='mdをコピーする';btn.classList.remove('done');},2500);};
+  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(md).then(finish);}
+  else{const ta=document.createElement('textarea');ta.value=md;ta.style.cssText='position:fixed;top:-9999px';document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);finish();}
+}
+function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2000);}
 </script>
 </body>
 </html>
